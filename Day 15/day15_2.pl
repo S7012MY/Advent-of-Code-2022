@@ -22,28 +22,24 @@ for my $line (split '\n', read_file('day15.txt')) {
   $max_x = $sx if $sx > $max_x;
 }
 
-my $y = 2000000;
 my $res = 0;
-say "$max_dist $min_x $max_x";
-for my $x (0 .. 4000000) {
-  for my $sensor (@sensors) {
-    
-  }
-  for my $y (0 .. 4000000) {
-    say "$x $y";
+my $max_coord = 4000000;
+for (my $x = 0; $x <= $max_coord; ++$x) {
+  for (my $y = 0; $y <= $max_coord; ++$y) {
+    # say "$x $y";
     my $ok = 1;
     for my $sensor (@sensors) {
-      if (mht($x, $y, $sensor->[0], $sensor->[1]) <= $sensor->[2] || $beacons{"$x|$y"}) {
-        # say "$x $y $sensor->[0] $sensor->[1]";
+      if (mht($x, $y, $sensor->[0], $sensor->[1]) <= $sensor->[2]) {
+        my $remaining_dist = $sensor->[2] - abs($x - $sensor->[0]);
+        $y = $sensor->[1] + $remaining_dist - 1 if $sensor->[1] + $remaining_dist - 1 > $y;
+
         $ok = 0;
         last;
       }
     }
     if ($ok) {
-      say $x . " " . $y if $ok;
-      exit;
+      say $x . " " . $y . " " . ($x * 4000000 + $y) if $ok;
+      exit 0;
     }
   }
 }
-
-say $res;
